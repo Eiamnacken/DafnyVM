@@ -12,14 +12,21 @@ class   Stack{
 
 	
 
-	method pop()returns(value:int)
+	method pop()returns(value:int,wasEmpty:bool)
 	modifies this;
-	requires !isEmpty()
-	{
+	ensures wasEmpty==>values==[]
+	{	
+		if(!isEmpty()){
 			value:=values[0];
-			values:=values[1..];
-			return value;
-
+			if(|values|>=2){
+				values:=values[1..];
+			}else{
+				values:=[];
+			}
+			wasEmpty:=false;
+		}else{
+			wasEmpty:=true;
+		}
 	}
 
 	method push(variable: int)
@@ -36,7 +43,7 @@ class   Stack{
 		|values|==0
 	}
 
-	method dup()returns(value:bool)
+	method dup()returns()
 	modifies this
 	ensures !isEmpty()==>moreThanTwo();
 	ensures !isEmpty()==> values[0]==values[1];
@@ -45,9 +52,6 @@ class   Stack{
 		if(!isEmpty()){
 			dupValue:=values[0];
 			values:= [dupValue]+values;
-			value:=true;
-		}else{
-			value:=false;
 		}
 	}
 
@@ -61,26 +65,29 @@ class   Stack{
 	modifies this;
 	requires moreThanTwo()
 	{
+		var firstEmpty:bool;
+		var secondEmpty:bool;
 		var first:int;
 		var second:int;
-		first:=pop();
-
-		if(!isEmpty()){
-			second:=pop();
+		first,firstEmpty:=pop();
+		second,secondEmpty:=pop();
+		if(!firstEmpty&&secondEmpty){
 			value:=multi(first,second);
 		}
+		
 		
 	}
 
 	method additFirstTwo()returns(value:int)
 	modifies this;
-	requires moreThanTwo()
 	{
+		var firstEmpty:bool;
+		var secondEmpty:bool;
 		var first:int;
 		var second:int;
-		first:=pop();
-		if(!isEmpty()){
-			second:=pop();
+		first,firstEmpty:=pop();
+		second,secondEmpty:=pop();
+		if(!firstEmpty&&secondEmpty){
 			value:=addit(first,second);
 		}
 		
@@ -97,5 +104,34 @@ class   Stack{
 	{
 		value:=first+second;
 	}
+
+}
+
+
+
+method Main(){
+	
+	var stack:Stack := new Stack();
+	var test:int;
+	print(test);
+	stack.push(5);
+	stack.push(7);
+	stack.push(4);
+	stack.dup();
+	var empty:bool;
+	var emptyS:bool;
+	var first:int;
+	var second:int;
+	first,empty:=stack.pop();
+	second,emptyS:=stack.pop();
+	if(!empty&&!emptyS){
+		assert(first==second);
+	}
+
+	
+
+	
+
+
 
 }
