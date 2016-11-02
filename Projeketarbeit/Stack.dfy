@@ -61,10 +61,11 @@ class   Stack{
 		|values|>=2
 	}
 
-	method multiFirstTwo()returns(value:int)
+	method multiFirstTwo()returns()
 	modifies this;
-	requires moreThanTwo()
+	ensures !isEmpty()
 	{
+		var result:int;
 		var firstEmpty:bool;
 		var secondEmpty:bool;
 		var first:int;
@@ -72,15 +73,21 @@ class   Stack{
 		first,firstEmpty:=pop();
 		second,secondEmpty:=pop();
 		if(!firstEmpty&&secondEmpty){
-			value:=multi(first,second);
+			result:=multi(first,second);
+			push(result);
+		}else{
+			push(second);
+			push(first);
 		}
 		
 		
 	}
 
-	method additFirstTwo()returns(value:int)
+	method additFirstTwo()returns()
 	modifies this;
+	requires !isEmpty()
 	{
+		var result:int;
 		var firstEmpty:bool;
 		var secondEmpty:bool;
 		var first:int;
@@ -88,7 +95,11 @@ class   Stack{
 		first,firstEmpty:=pop();
 		second,secondEmpty:=pop();
 		if(!firstEmpty&&secondEmpty){
-			value:=addit(first,second);
+			result:=addit(first,second);
+			push(result);
+		}else{
+			push(second);
+			push(first);
 		}
 		
 	}
@@ -122,11 +133,7 @@ method Main(){
 	var emptyS:bool;
 	var first:int;
 	var second:int;
-	first,empty:=stack.pop();
-	second,emptyS:=stack.pop();
-	if(!empty&&!emptyS){
-		assert(first==second);
-	}
+	
 
 	
 
