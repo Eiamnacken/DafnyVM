@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9941DA78-85E0-4D36-8435-2318FD1CB1FD}"
+	ProjectSection(SolutionItems) = preProject
+		Stack.dfy = Stack.dfy
+		D:\Dokumente\test.dfy = D:\Dokumente\test.dfy
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
