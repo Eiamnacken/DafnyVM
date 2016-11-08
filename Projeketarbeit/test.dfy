@@ -13,13 +13,16 @@ class   Stack{
 
 	
 	//removes the top element of the stack
+	//Fail is ture if there was no value on the stack to pop
 	method pop()returns(value:int,fail:bool)
 	modifies this
 	ensures fail==>values==[] && old(|values|==0)
 	ensures !fail ==> |values| == old(|values|-1)
 	ensures !fail ==> old(values[0]) == value
 	{	
+		
 		if(!isEmpty()){
+			
 			value:=values[0];
 			if(|values|>=2){
 				values:=values[1..];
@@ -46,6 +49,7 @@ class   Stack{
 	}
 
 	//duplicates the element which is on the top of the stack
+	//fail is true if there wasn't enough ints on the stack
 	method dup()returns(fail:bool)
 	modifies this
 	ensures !fail==>moreThanTwo();
@@ -68,6 +72,7 @@ class   Stack{
 	}
 
 	//multiplicates the two elements which are on the top of stack
+	//see dup for fail
 	method multi()returns(fail:bool)
 	modifies this;
 	ensures !fail==>!isEmpty()
@@ -85,6 +90,7 @@ class   Stack{
 	}
 
 	// adds the two elements which are on the top of the stack
+	//see dup for fail
 	method add()returns(fail :bool)
 	modifies this;
 	ensures fail==>old(|values|<2)
@@ -116,18 +122,20 @@ class {:autocontracts} Interpreter{
 		predicate Valid()
 		reads this,stack
 		{
-			stack != null
+			stack != null&&
+			|stack.values|>=0
 		}
 
-		// if one of the operations failed, exitCode will be true
-		method lexer(code : seq<int>)returns(exitCode:bool,returnValue:int)
+		// if one of the operations failed, error will be true
+		method lexer(code : seq<int>)returns(error:bool,returnValue:int)
 		requires Valid()
-		modifies this,stack
 		requires code!=[]
+		modifies this,stack
 		{
-			exitCode:=false;
+			error:=false;
 			var i := 0;
 			while(i<|code|)
+			invariant code!=[]
 			invariant  i<=|code|
 			invariant Valid()
 			modifies this,stack
@@ -144,51 +152,61 @@ class {:autocontracts} Interpreter{
 				//pop
 				else if(code[i] == 1)
 				{
-					if(stack.isEmpty())
-					{
-						returnValue,exitCode:=stack.pop();
-					}
+					returnValue,error:=stack.pop();
 				}
 				//add
 				else if(code[i] == 2)
 				{
-				if(stack.moreThanTwo())
-				{
-				  exitCode:=stack.add();
-				  }
+				
+				  error:=stack.add();
+				  
 				}
 				//multi 
 				else if(code[i] == 3)
 				{
-					if(stack.moreThanTwo())
-					{
-						exitCode:=stack.multi();
-					}
+					error:=stack.multi();
 				}
 				//dup 
 				else if(code[i] == 4)
 				{
-					if(!stack.isEmpty())
-					{
-						exitCode:=stack.dup();
-					}
+					error:=stack.dup();
 				}
 				if(i<|code|){
 					i := i+1;
 				}
+				if(error){
+					print("Fehler\n");
+					break;
+				}
+				
 			}
 		}
 }
 
 
 // main method
-method Main(){
+method Main()
+{
 	var interpreter: Interpreter := new Interpreter();
 	var result:int;
 	var exitCode:bool;
-	exitCode,result:=interpreter.lexer([0,1,0,2,2]);
+	exitCode,result:=test(interpreter);
+	var i:int:=0;
+	while(i<|interpreter.stack.values|)
+	{
+		print(interpreter.stack.values[i]);
+		print("\n");
+		i:=i+1;
 
+	}
 	
-	print();
+}
+
+
+method test(interpreter:Interpreter)returns (error:bool,result:int)
+requires interpreter != null
+requires interpreter.Valid()
+{
+	error,result:=interpreter.lexer([0,3,0,4,2,0,6,3,4]);
 }
 
