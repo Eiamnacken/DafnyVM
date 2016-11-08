@@ -114,7 +114,7 @@ class {:autocontracts} Interpreter{
 		}
 
 		predicate Valid()
-		reads this
+		reads this,stack
 		{
 			stack != null
 		}
@@ -128,15 +128,17 @@ class {:autocontracts} Interpreter{
 			exitCode:=false;
 			var i := 0;
 			while(i<|code|)
-			invariant  i<|code|
+			invariant  i<=|code|
 			invariant Valid()
 			modifies this,stack
 			{
 				//push
 				if(code[i] == 0){
-					stack.push(code[i+1]);
-					if(i<|code|){
-						i := i+1;
+					if(i<|code|-1){
+						stack.push(code[i+1]);
+						if(i<|code|){
+							i := i+1;
+						}
 					}
 				}
 				//pop
