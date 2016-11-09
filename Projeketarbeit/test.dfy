@@ -129,6 +129,7 @@ class {:autocontracts} Interpreter{
 		}
 
 		// if one of the operations failed, error will be true
+		// methodenname geändert
 		method parser(code : seq<int>)returns(error:bool,returnValue:int)
 		requires Valid()
 		requires code!=[]
