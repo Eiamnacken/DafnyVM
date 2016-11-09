@@ -129,7 +129,7 @@ class {:autocontracts} Interpreter{
 		}
 
 		// if one of the operations failed, error will be true
-		method lexer(code : seq<int>)returns(error:bool,returnValue:int)
+		method parser(code : seq<int>)returns(error:bool,returnValue:int)
 		requires Valid()
 		requires code!=[]
 		modifies this,stack
@@ -209,6 +209,6 @@ method test(interpreter:Interpreter)returns (error:bool,result:int)
 requires interpreter != null
 requires interpreter.Valid()
 {
-	error,result:=interpreter.lexer([0,3,0,4,2,0,6,3,4]);
+	error,result:=interpreter.parser([0,3,0,4,2,0,6,3,4]);
 }
 
