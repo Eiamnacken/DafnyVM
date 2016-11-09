@@ -37,6 +37,7 @@ class   Stack{
 	ensures !isEmpty()
 	ensures values[0]==variable;
 	ensures |values| == old(|values|+1)
+	//verbeserung nach Präsentation
 	ensures values[1..]==old(values)
 	{
 		values:=[variable]+values;
